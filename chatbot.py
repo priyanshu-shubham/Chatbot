@@ -12,10 +12,6 @@ Original file is located at
 from sentence_transformers import SentenceTransformer
 model = SentenceTransformer('bert-base-nli-mean-tokens')
 
-import pandas as pd
-import numpy as np
-df=pd.read_csv("/content/drive/MyDrive/Dataset Chatbot - Form Responses 1.csv")
-
 def remove_punc(sentence):
     punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
 
@@ -25,12 +21,12 @@ def remove_punc(sentence):
           no_punct = no_punct + char
     return no_punct
 
-questions=list(df["Question?"].values)
-q=[remove_punc(ques).strip().lower() for ques in questions]
-questions=q
+import pickle
 
-answers=list(df["Answer"].values)
-question_embeddings = model.encode(questions)
+dbfile = open('data/answers', 'rb')
+answers=pickle.load(dbfile)
+dbfile = open('data/questions', 'rb')
+question_embeddings = pickle.load(dbfile)
 
 import scipy
 query = 'which sports are good at iit mandi'
@@ -52,5 +48,3 @@ for query, query_embedding in zip(queries, query_embeddings):
       print(answers[idx])
     else:
       print("I can't understand what you are saying. You see I am still learning.")
-
-pip freeze
